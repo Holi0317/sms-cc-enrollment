@@ -8,7 +8,7 @@ Initialize this app
 import os
 import json
 
-from termcolor import colored, cprint
+from .termcolor import colored, cprint
 
 from . import utils
 from .glo import obj, obj_lock

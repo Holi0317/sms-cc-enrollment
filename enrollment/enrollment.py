@@ -5,7 +5,7 @@ import time
 import random
 import signal
 
-from termcolor import cprint
+from .termcolor import cprint
 
 from . import init, utils
 from .glo import obj
