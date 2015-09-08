@@ -8,10 +8,12 @@ Initialize this app
 import os
 import json
 
-from .. import utils
-from ..glo import obj, obj_lock
+from termcolor import colored, cprint
 
-BUDDA = '''
+from . import utils
+from .glo import obj, obj_lock
+
+BUDDA = r'''
 
                                 _oo8oo_
                                o8888888o
@@ -44,11 +46,44 @@ DEFAULT_CONFIG = {
         {
             'question': 'foo',
             'answer': 'bar',
-            'hint': 'The answer is bar'
+            'hint': 'The answer is bar',
+            'ignore_case': True
         }
     ],
-    'max_attempt': 3
+    'max_attempt': 3,
+    'troll': True
 }
+
+
+class Question(object):
+
+    def __init__(self, q):
+        """
+        Construct a question.
+
+        @param (dict) q: dict object read from config.
+        @return None.
+        """
+        for item in ('question', 'answer', 'hint', 'ignore_case'):
+            if item not in q:
+                raise ValueError('Item: {0} does not have key {1}.'.format(
+                    q, item))
+
+        self.question = q['question']
+        self.answer = q['answer']
+        self.hint = q['hint']
+        self.ignore_case = q['ignore_case']
+
+    def is_correct(self, attempt):
+        """
+        Is attempt correct?
+
+        @param (str) attempt: attempted answer
+        @return (bool): is attempt correct.
+        """
+        if self.ignore_case:
+            attempt = attempt.lower()
+        return self.answer == attempt
 
 
 def _handle_perm_error(path):
@@ -87,13 +122,9 @@ def make_config(path):
 
     @param (str) path: path to write config into
     @return None
-    @exit and print message when no permission
     """
-    try:
-        with open(path, 'w') as file:
-            file.write(json.dumps(DEFAULT_CONFIG))
-    except PermissionError:
-        _handle_perm_error(path)
+    with open(path, 'w') as file:
+        file.write(json.dumps(DEFAULT_CONFIG))
 
 
 def init():
@@ -101,8 +132,7 @@ def init():
     Perform directory check, print ridiculous thing
     """
     utils.clear()
-    print(BUDDA)
-    print('Initializing...')
+    cprint('Initializing...', 'blue')
 
     # Read config
     config_file = os.path.join(os.path.expanduser('~'), '.enrollment.json')
@@ -122,4 +152,15 @@ def init():
         print('{0} is not valid json.')
         _ask_make_config(config_file)
 
-    print('Initialization completed!')
+    # create questions
+    obj['questions'] = []
+    for item in obj['config']['questions']:
+        with obj_lock:
+            obj['questions'].append(Question(item))
+
+    if obj['config']['troll']:
+        print('Troll is {0}. Enjoy:)'.format(colored('enabled', 'green')))
+        print(BUDDA)
+    else:
+        print('Troll is {0}. :('.format(colored('disabled', 'red')))
+    cprint('Initialization completed!', 'green')
