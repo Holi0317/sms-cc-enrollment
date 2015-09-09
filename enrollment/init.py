@@ -13,34 +13,6 @@ from .termcolor import colored, cprint
 from . import utils
 from .glo import obj, obj_lock
 
-BUDDA = r'''
-
-                                _oo8oo_
-                               o8888888o
-                               88" . "88
-                               (| -_- |)
-                               0\  =  /0
-                             ___/'==='\___
-                           .' \\|     |// '.
-                          / \\|||  :  |||// \
-                         / _||||| -:- |||||_ \
-                        |   | \\\  -  /// |   |
-                        | \_|  ''\---/''  |_/ |
-                        \  .-\__  '-'  __/-.  /
-                      ___'. .'  /--.--\  '. .'___
-                   ."" '<  '.___\_<|>_/___.'  >' "".
-                  | | :  `- \`.:`\ _ /`:.`/ -`  : | |
-                  \  \ `-.   \_ __\ /__ _/   .-` /  /
-              =====`-.____`.___ \_____/ ___.`____.-`=====
-                                `=---=`
-
-
-     ~~~~~~~Powered by https://github.com/ottomao/bugfreejs~~~~~~~
-
-                        佛祖保佑         永无bug
-
-'''
-
 DEFAULT_CONFIG = {
     'questions': [
         {
@@ -236,7 +208,7 @@ def init():
 
     if obj['config']['troll']:
         print('Troll is {0}. Enjoy:)'.format(colored('enabled', 'green')))
-        print(BUDDA)
+        print(utils.BUDDA)
     else:
         print('Troll is {0}. :('.format(colored('disabled', 'red')))
     cprint('Initialization completed!', 'green')
