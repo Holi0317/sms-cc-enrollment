@@ -6,7 +6,7 @@ Computer club 2015-2016 enrollment day Q&A program
 
 ## 安裝
 1. 需要Python3
-2. 執行 `pip install git+git://github.com/holi0317/sms-cc-enrollment.git@v1.0.2`
+2. 執行 `pip install git+git://github.com/holi0317/sms-cc-enrollment.git@v1.1.0`
 3. 執行 `enrollment`
 4. (建議) 執行 `while true;do enrollment && exit; done`
 
