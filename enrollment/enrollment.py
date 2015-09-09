@@ -31,6 +31,8 @@ def show_question(question):
     """
     attempt = 1
     while attempt <= obj['config']['max_attempt']:
+        if obj['config']['motd']:
+            print(obj['config']['motd'])
         print(question.print_question(attempt > 1))
 
         given = utils.input_('>>> ')

@@ -66,7 +66,8 @@ DEFAULT_CONFIG = {
         }
     ],
     'max_attempt': 3,
-    'troll': True
+    'troll': True,
+    'motd': 'Welcome.'
 }
 
 
