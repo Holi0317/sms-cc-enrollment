@@ -31,10 +31,7 @@ def show_question(question):
     """
     attempt = 1
     while attempt <= obj['config']['max_attempt']:
-        print('Question: ', question.question)
-
-        if attempt > 1 and question.hint:
-            print('Hint: ', question.hint)
+        print(question.print_question(attempt > 1))
 
         given = utils.input_('>>> ')
 

@@ -45,9 +45,24 @@ DEFAULT_CONFIG = {
     'questions': [
         {
             'question': 'foo',
+            'choice': {},
             'answer': 'bar',
             'hint': 'The answer is bar',
-            'ignore_case': True
+            'ignore_case': True,
+            'type': 'question'
+        },
+        {
+            'question': 'This is a MC question.',
+            'choice': {
+                'A': 'Choice A',
+                'B': 'Choice B',
+                'C': 'Choice C',
+                'D': 'Choice D',
+            },
+            'answer': 'a',
+            'hint': 'Answer is A.',
+            'ignore_case': True,
+            'type': 'mc'
         }
     ],
     'max_attempt': 3,
@@ -57,22 +72,68 @@ DEFAULT_CONFIG = {
 
 class Question(object):
 
-    def __init__(self, q):
+    def __init__(self):
+        self.question = ''
+        self.answer = ''
+        self.choice = {}
+        self.hint = ''
+        self.ignore_case = True
+        self.type = 'question'
+
+    @classmethod
+    def from_json(cls, q):
         """
-        Construct a question.
+        Construct a question from json.
 
         @param (dict) q: dict object read from config.
         @return None.
         """
-        for item in ('question', 'answer', 'hint', 'ignore_case'):
+        for item in ('question', 'answer', 'hint',
+                     'ignore_case', 'type', 'choice'):
             if item not in q:
                 raise ValueError('Item: {0} does not have key {1}.'.format(
                     q, item))
 
-        self.question = q['question']
-        self.answer = q['answer']
-        self.hint = q['hint']
-        self.ignore_case = q['ignore_case']
+        thing = cls()
+
+        thing.question = q['question']
+        thing.answer = q['answer']
+        thing.hint = q['hint']
+        thing.ignore_case = q['ignore_case']
+        thing.type = q['type']
+        thing.choice = q['choice']
+
+        return thing
+
+    def _get_choice(self):
+        """
+        Return choice that can be printed on screen.
+        Return empty string if it is not a mc question.
+
+        @return (str): choices.
+        """
+        if self.type != 'mc':
+            return ''
+
+        return '\n'.join(['{choice}: {item}'.format(choice=choice, item=item)
+                          for choice, item
+                          in sorted(self.choice.items(), key=lambda x: x[1])])
+
+    def print_question(self, with_hint=False):
+        """
+        Return question string for printing.
+
+        @param (bool) with_hint: Need hint or not. If hint is empty string,
+        it will never be printed
+        @return (str): printable question string.
+        """
+        prefix_n = '\n{0}'
+        hint_temp = '\nHint: {0}'
+        return 'Question: {question}{choice}{hint}'.format(
+            question=self.question,
+            choice=prefix_n.format(self._get_choice()),
+            hint=hint_temp.format(self.hint)
+            if self.hint and with_hint else '')
 
     def is_correct(self, attempt):
         """
@@ -84,6 +145,20 @@ class Question(object):
         if self.ignore_case:
             attempt = attempt.lower()
         return self.answer == attempt
+
+    def to_json(self):
+        """
+        Convert question object to json.
+
+        @return (str): Json-encoded question.
+        """
+        return json.dumps({
+            'question': self.question,
+            'answer': self.answer,
+            'hint': self.hint,
+            'ignore_case': self.ignore_case,
+            'type': self.type
+        }, sort_keys=True, indent=4)
 
 
 def _handle_perm_error(path):
@@ -124,7 +199,7 @@ def make_config(path):
     @return None
     """
     with open(path, 'w') as file:
-        file.write(json.dumps(DEFAULT_CONFIG))
+        file.write(json.dumps(DEFAULT_CONFIG, sort_keys=True, indent=4))
 
 
 def init():
@@ -156,7 +231,7 @@ def init():
     obj['questions'] = []
     for item in obj['config']['questions']:
         with obj_lock:
-            obj['questions'].append(Question(item))
+            obj['questions'].append(Question.from_json(item))
 
     if obj['config']['troll']:
         print('Troll is {0}. Enjoy:)'.format(colored('enabled', 'green')))
