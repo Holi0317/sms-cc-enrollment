@@ -147,7 +147,7 @@ def init():
 
     try:
         with obj_lock:
-            obj['config'] = json.loads(read)
+            obj['config'] = json.loads(read, strict=False)
     except ValueError:
         print('{0} is not valid json.')
         _ask_make_config(config_file)
