@@ -61,5 +61,8 @@ def cli():
     init.init()
     print()
     while True:
-        show_question(random.choice(obj['questions']))
-        utils.clear()
+        try:
+            show_question(random.choice(obj['questions']))
+            utils.clear()
+        except KeyboardInterrupt:
+            utils.clear()

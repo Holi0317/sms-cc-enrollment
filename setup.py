@@ -2,11 +2,12 @@
 # LICENSE: MIT
 
 from setuptools import setup, find_packages
+from enrollment import __version__
 
 setup(
     name='enrollment',
     description='Q&A for 2015 enrollment day',
-    version='1.0.1',
+    version=__version__,
     author='holi0317',
     author_email='holliswuhollis@gmail.com',
     license='MIT',
