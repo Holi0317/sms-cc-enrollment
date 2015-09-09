@@ -208,7 +208,6 @@ def init():
 
     if obj['config']['troll']:
         print('Troll is {0}. Enjoy:)'.format(colored('enabled', 'green')))
-        print(utils.BUDDA)
     else:
         print('Troll is {0}. :('.format(colored('disabled', 'red')))
     cprint('Initialization completed!', 'green')
