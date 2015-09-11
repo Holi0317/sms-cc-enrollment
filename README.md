@@ -1,5 +1,6 @@
 #sms-cc-enrollment
 Computer club 2015-2016 enrollment day Q&A program
+DEPARATED! As the event is finished
 
 ## 簡介
 2小時內隨便做出來的鬼東西 ;p
